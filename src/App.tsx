@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
-function App() {
+import Login from "./components/Auth/Login";
+import ProductTable from "./components/Products/ ProductTable";
+import ProductDetail from "./components/Products/ProductDetail";
+import NotFound from "./pages/NotFound";
+import Header from "./components/Layout/Header";
+import Users from "./pages/ChangePassword";
+import CreateProduct from "./pages/CreateProduct";
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/products" element={<ProductTable />} />
+          <Route path="/products/create" element={<CreateProduct />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/user" element={<Users />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
