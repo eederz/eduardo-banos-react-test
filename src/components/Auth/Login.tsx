@@ -10,12 +10,12 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [loginError, setLoginError] = useState<string | null>(null); // Estado para manejar errores de login
 
   const predefinedEmail = "usuario@dominio.com";
-  const predefinedPassword = "Contrasena1!";
 
   useEffect(() => {
-    console.log(user)
+    console.log(user);
     if (user) {
       navigate("/products");
     }
@@ -71,6 +71,7 @@ const Login: React.FC = () => {
     setEmail(newEmail);
     const emailErrors = validateEmail(newEmail);
     setErrors(emailErrors);
+    setLoginError(null); // Resetea el error de login al cambiar el email
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +79,7 @@ const Login: React.FC = () => {
     setPassword(newPassword);
     const validationErrors = validatePassword(newPassword);
     setErrors(validationErrors);
+    setLoginError(null); // Resetea el error de login al cambiar la contraseña
   };
 
   const handleConfirmPasswordChange = (
@@ -93,16 +95,17 @@ const Login: React.FC = () => {
     const emailErrors = validateEmail(email);
     const passwordErrors = validatePassword(password);
     setErrors({ ...emailErrors, ...passwordErrors });
-    login(email, password);
-
-    if (email === predefinedEmail && password === predefinedPassword) {
+  
+    const storedPassword = localStorage.getItem("password") ?? "Contrasena1!";
+  
+    if (email === predefinedEmail && password === storedPassword) {
+      login(email, password);
       navigate("/products");
     } else {
-      setErrors({
-        credentials: "El correo electrónico o la contraseña son incorrectos.",
-      });
+      setLoginError("El correo electrónico o la contraseña son incorrectos."); // Mensaje de error
     }
   };
+  
 
   return (
     <div className="loginContainer">
@@ -141,7 +144,7 @@ const Login: React.FC = () => {
           Iniciar Sesión
         </button>
 
-        {errors.credentials && <p>{errors.credentials}</p>}
+        {loginError && <p className="error-message">{loginError}</p>} {/* Mensaje de error de login */}
       </form>
     </div>
   );
