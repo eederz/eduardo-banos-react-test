@@ -1,3 +1,4 @@
+// AuthContext.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface AuthContextType {
@@ -28,18 +29,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (email: string, password: string) => {
-    setUser(email);
-    setPassword(password);
-    localStorage.setItem("user", email);
-    localStorage.setItem("password", password);
-    setIsAuthenticated(true);
+    const storedPassword = localStorage.getItem("password") ?? "Contrasena1!";
+    
+    if (email === "usuario@dominio.com" && password === storedPassword) {
+      setUser(email);
+      setPassword(password);
+      localStorage.setItem("user", email);
+      setIsAuthenticated(true);
+    } else {
+      console.error("Credenciales incorrectas");
+    }
   };
+  
 
   const logout = () => {
     setUser(null);
     setPassword(null);
     localStorage.removeItem("user");
-    localStorage.removeItem("password");
     setIsAuthenticated(false);
   };
 
@@ -51,8 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       console.error("No hay usuario autenticado para cambiar la contraseña.");
     }
-  };
-  
+  };  
 
   return (
     <AuthContext.Provider
